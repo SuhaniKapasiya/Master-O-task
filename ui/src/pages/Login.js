@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { loginUser } from "../api";
 import {
   Box,
@@ -19,6 +19,19 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
+
+  useEffect(() => {
+    window.sendFlutterAlert = (msg) => {
+      if (window.FlutterChannel && window.FlutterChannel.postMessage) {
+        window.FlutterChannel.postMessage(
+          JSON.stringify({ action: "showAlert", message: msg })
+        );
+      }
+    };
+    return () => {
+      delete window.sendFlutterAlert;
+    };
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -97,6 +110,18 @@ const Login = () => {
               ) : (
                 "Login"
               )}
+            </Button>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="secondary"
+              size="large"
+              onClick={() =>
+                window.sendFlutterAlert &&
+                window.sendFlutterAlert("This is a test alert from the Alert button!")
+              }
+            >
+              Alert Flutter App
             </Button>
             {error && (
               <Typography color="error" align="center">
