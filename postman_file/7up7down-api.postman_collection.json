@@ -59,7 +59,7 @@
       }
     },
     {
-      "name": "Get or Create Player (Protected)",
+      "name": "Play Game (Bet, Roll, Log, Update)",
       "request": {
         "method": "POST",
         "header": [
@@ -68,23 +68,40 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"testuser\"\n}"
+          "raw": "{\n  \"betType\": \"7up\",\n  \"betAmount\": 100\n}"
         },
         "url": {
-          "raw": "http://localhost:5000/api/player",
+          "raw": "http://localhost:5000/api/play",
           "protocol": "http",
           "host": ["localhost"],
           "port": "5000",
-          "path": ["api", "player"]
+          "path": ["api", "play"]
         }
       }
     },
     {
-      "name": "Roll Dice",
+      "name": "Get Game History",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/api/history",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "history"]
+        }
+      }
+    },
+    {
+      "name": "Roll Dice (Legacy)",
       "request": {
         "method": "POST",
         "header": [
-          { "key": "Content-Type", "value": "application/json" }
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
         ],
         "url": {
           "raw": "http://localhost:5000/api/roll",
@@ -96,11 +113,12 @@
       }
     },
     {
-      "name": "Calculate Result",
+      "name": "Calculate Result (Legacy)",
       "request": {
         "method": "POST",
         "header": [
-          { "key": "Content-Type", "value": "application/json" }
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
         ],
         "body": {
           "mode": "raw",
@@ -116,15 +134,16 @@
       }
     },
     {
-      "name": "Update Player Points",
+      "name": "Update Player Points (Legacy)",
       "request": {
         "method": "POST",
         "header": [
-          { "key": "Content-Type", "value": "application/json" }
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"testuser\",\n  \"newPoints\": 5200\n}"
+          "raw": "{\n  \"userId\": \"<userId>\",\n  \"newPoints\": 5200\n}"
         },
         "url": {
           "raw": "http://localhost:5000/api/update",
