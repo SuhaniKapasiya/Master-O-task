@@ -19,13 +19,12 @@ exports.rollAndPlay = async (req, res) => {
     const userId = req.user.userId;
     const { betType, betAmount } = req.body;
 
-    const user = await User.findOneAndUpdate(
-      { _id: userId, points: { $gte: betAmount } },
-      { $inc: { points: -betAmount } },
-      { new: true }
-    );
-    if (!user) return res.status(400).json({ error: "Insufficient points" });
+    // Fetch user and check points
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    if (user.points < betAmount) return res.status(400).json({ error: "Insufficient points" });
 
+    // Roll dice
     const die1 = Math.floor(Math.random() * 6) + 1;
     const die2 = Math.floor(Math.random() * 6) + 1;
     const total = die1 + die2;
@@ -43,15 +42,15 @@ exports.rollAndPlay = async (req, res) => {
       payout = betAmount * 5;
     }
 
-    let updatedUser = user;
-    if (win && payout > 0) {
-      updatedUser = await User.findByIdAndUpdate(
-        userId,
-        { $inc: { points: payout } },
-        { new: true }
-      );
+    // Update user points
+    if (win) {
+      user.points += payout;
+    } else {
+      user.points -= betAmount;
     }
+    await user.save();
 
+    // Log game history
     await GameHistory.create({
       user: userId,
       betType,
@@ -60,15 +59,16 @@ exports.rollAndPlay = async (req, res) => {
       die2,
       total,
       win,
-      payout,
+      payout
     });
+
     res.status(200).json({
       die1,
       die2,
       total,
       win,
       payout,
-      points: updatedUser.points,
+      points: user.points
     });
   } catch (error) {
     console.error("Error in rollAndPlay:", error.message);

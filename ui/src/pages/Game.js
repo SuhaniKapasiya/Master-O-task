@@ -65,7 +65,7 @@ const GameContent = () => {
         enqueueSnackbar(res.data.win ? "You Win!" : "You Lose!", {
           variant: res.data.win ? "success" : "error",
         });
-      }, 900); // Animation duration
+      }, 500); 
     } catch (err) {
       setError(err.response?.data?.error || "Something went wrong");
       setRolling(false);
