@@ -33,6 +33,15 @@ const Login = () => {
     };
   }, []);
 
+  useEffect(() => {
+    window.receiveFromFlutter = (data) => {
+      alert("Received from Flutter: " + data);
+    };
+    return () => {
+      delete window.receiveFromFlutter;
+    };
+  }, []);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };

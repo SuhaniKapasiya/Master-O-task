@@ -81,9 +81,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 );
               }
             }
-          } catch (e) {
-            // Optionally handle JSON parse errors
-          }
+          } catch (e) {}
         },
       )
       ..loadRequest(Uri.parse('https://master-o-task.vercel.app/login'));
@@ -94,6 +92,15 @@ class _WebViewScreenState extends State<WebViewScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('WebView')),
       body: WebViewWidget(controller: _controller),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _controller.runJavaScript(
+            "window.receiveFromFlutter && window.receiveFromFlutter('hi')",
+          );
+        },
+        tooltip: 'Send to web',
+        child: const Icon(Icons.paragliding),
+      ),
     );
   }
 }

@@ -34,7 +34,6 @@ const GameContent = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    // Fetch current points on mount
     const fetchPoints = async () => {
       try {
         const res = await getHistory();
@@ -50,7 +49,6 @@ const GameContent = () => {
     fetchPoints();
   }, []);
 
-  // Send alert to Flutter if running in WebView
   const sendFlutterAlert = (msg) => {
     if (window.FlutterChannel && window.FlutterChannel.postMessage) {
       window.FlutterChannel.postMessage(
@@ -74,7 +72,7 @@ const GameContent = () => {
         enqueueSnackbar(res.data.win ? "You Win!" : "You Lose!", {
           variant: res.data.win ? "success" : "error",
         });
-        // Send alert to Flutter on win/lose
+
         if (res.data.win) {
           sendFlutterAlert("Congratulations! You Win!");
         } else {
