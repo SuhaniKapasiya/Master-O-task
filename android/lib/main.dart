@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,22 +22,75 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String? _username;
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsername();
+  }
+
+  Future<void> _loadUsername() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString('username');
+    if (saved != null) {
+      setState(() {
+        _username = saved;
+        _controller.text = saved;
+      });
+    }
+  }
+
+  Future<void> _saveUsername() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', _controller.text);
+    setState(() {
+      _username = _controller.text;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const WebViewScreen()),
-            );
-          },
-          child: const Text('Open WebView'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: _controller,
+              decoration: const InputDecoration(labelText: 'Username'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _saveUsername,
+              child: const Text('Save Username'),
+            ),
+            if (_username != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text('Saved username: $_username'),
+              ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const WebViewScreen()),
+                );
+              },
+              child: const Text('Open WebView'),
+            ),
+          ],
         ),
       ),
     );
