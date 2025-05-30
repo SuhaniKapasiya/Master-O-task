@@ -13,7 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'WebView Example',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
@@ -112,6 +113,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..clearCache() // Clear cache to avoid ERR_CACHE_MISS
       ..addJavaScriptChannel(
         'FlutterChannel',
         onMessageReceived: (JavaScriptMessage message) {
