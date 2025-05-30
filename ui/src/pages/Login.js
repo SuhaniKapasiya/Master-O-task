@@ -1,10 +1,24 @@
 import React, { useState } from "react";
 import { loginUser } from "../api";
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  Link,
+  Stack,
+  CircularProgress,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
-const Login = ({ onLogin }) => {
+const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,8 +31,7 @@ const Login = ({ onLogin }) => {
     try {
       const res = await loginUser(form);
       localStorage.setItem("token", res.data.token);
-      if (onLogin) onLogin();
-      window.location.href = "/game";
+      navigate("/game");
     } catch (err) {
       setError(err.response?.data?.error || "Login failed");
     } finally {
@@ -27,44 +40,79 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow-md w-full max-w-sm"
+    <Container maxWidth="xs">
+      <Box
+        minHeight="100vh"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
       >
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
-        <div className="mb-4">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
-          disabled={loading}
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            p: 3,
+            bgcolor: "background.paper",
+            borderRadius: 2,
+            boxShadow: 2,
+            width: 1,
+          }}
         >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-        {error && <div className="mt-4 text-red-600 text-center">{error}</div>}
-      </form>
-    </div>
+          <Stack spacing={2}>
+            <Typography
+              variant={isMobile ? "h5" : "h4"}
+              align="center"
+              fontWeight={600}
+            >
+              Login
+            </Typography>
+            <TextField
+              fullWidth
+              label="Email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              type="email"
+              required
+            />
+            <TextField
+              fullWidth
+              label="Password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              type="password"
+              required
+            />
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+              size="large"
+            >
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Login"
+              )}
+            </Button>
+            {error && (
+              <Typography color="error" align="center">
+                {error}
+              </Typography>
+            )}
+            <Typography align="center" variant="body2">
+              Don't have an account?{" "}
+              <Link href="/register" underline="hover">
+                Sign up
+              </Link>
+            </Typography>
+          </Stack>
+        </Box>
+      </Box>
+    </Container>
   );
 };
 

@@ -15,7 +15,6 @@ import NavBar from "./components/NavBar";
 function App() {
   return (
     <Router>
-      <NavBar />
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
@@ -23,6 +22,7 @@ function App() {
           path="/game"
           element={
             <PrivateRoute>
+              <NavBar />
               <Game />
             </PrivateRoute>
           }
@@ -31,6 +31,7 @@ function App() {
           path="/history"
           element={
             <PrivateRoute>
+              <NavBar />
               <History />
             </PrivateRoute>
           }
