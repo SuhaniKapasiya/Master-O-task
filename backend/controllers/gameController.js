@@ -1,18 +1,6 @@
 const User = require("../models/userModel");
 
-exports.getOrCreatePlayer = async (req, res) => {
-  try {
-    const userId = req.user ? req.user.userId : req.body.userId;
-    if (!userId) return res.status(400).json({ error: "UserId is required" });
-    let user = await User.findById(userId);
-    if (!user) return res.status(404).json({ error: "User not found" });
-    // Player info is now part of User model
-    res.status(200).json({ username: user.username, points: user.points });
-  } catch (error) {
-    console.error("Error in getOrCreatePlayer:", error.message);
-    res.status(500).json({ error: error.message });
-  }
-};
+
 
 exports.rollDice = (req, res) => {
   try {
