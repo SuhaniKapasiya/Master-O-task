@@ -50,6 +50,15 @@ const GameContent = () => {
     fetchPoints();
   }, []);
 
+  // Send alert to Flutter if running in WebView
+  const sendFlutterAlert = (msg) => {
+    if (window.FlutterChannel && window.FlutterChannel.postMessage) {
+      window.FlutterChannel.postMessage(
+        JSON.stringify({ action: "showAlert", message: msg })
+      );
+    }
+  };
+
   const handlePlay = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -65,7 +74,13 @@ const GameContent = () => {
         enqueueSnackbar(res.data.win ? "You Win!" : "You Lose!", {
           variant: res.data.win ? "success" : "error",
         });
-      }, 500); 
+        // Send alert to Flutter on win/lose
+        if (res.data.win) {
+          sendFlutterAlert("Congratulations! You Win!");
+        } else {
+          sendFlutterAlert("Sorry, you lost. Try again!");
+        }
+      }, 500);
     } catch (err) {
       setError(err.response?.data?.error || "Something went wrong");
       setRolling(false);

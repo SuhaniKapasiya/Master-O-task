@@ -111,18 +111,7 @@ const Login = () => {
                 "Login"
               )}
             </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              color="secondary"
-              size="large"
-              onClick={() =>
-                window.sendFlutterAlert &&
-                window.sendFlutterAlert("This is a alert from React application")
-              }
-            >
-              Alert Flutter App
-            </Button>
+
             {error && (
               <Typography color="error" align="center">
                 {error}
