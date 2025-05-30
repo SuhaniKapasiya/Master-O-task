@@ -88,12 +88,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
       )
       ..loadRequest(
         Uri.parse('https://master-o-task.vercel.app/login'),
-        headers: {
-          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'Pragma': 'no-cache',
-          'Expires': '0',
-        },
-      );
+      ); // <-- No headers, no cache control
   }
 
   @override
