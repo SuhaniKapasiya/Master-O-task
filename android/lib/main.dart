@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,75 +22,22 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  String? _username;
-  final TextEditingController _controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUsername();
-  }
-
-  Future<void> _loadUsername() async {
-    final prefs = await SharedPreferences.getInstance();
-    final saved = prefs.getString('username');
-    if (saved != null) {
-      setState(() {
-        _username = saved;
-        _controller.text = saved;
-      });
-    }
-  }
-
-  Future<void> _saveUsername() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('username', _controller.text);
-    setState(() {
-      _username = _controller.text;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _controller,
-              decoration: const InputDecoration(labelText: 'Username'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _saveUsername,
-              child: const Text('Save Username'),
-            ),
-            if (_username != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Text('Saved username: $_username'),
-              ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const WebViewScreen()),
-                );
-              },
-              child: const Text('Open WebView'),
-            ),
-          ],
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const WebViewScreen()),
+            );
+          },
+          child: const Text('Open WebView'),
         ),
       ),
     );
@@ -113,7 +59,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..clearCache() // Clear cache to avoid ERR_CACHE_MISS
+      ..setBackgroundColor(const Color(0x00000000))
       ..addJavaScriptChannel(
         'FlutterChannel',
         onMessageReceived: (JavaScriptMessage message) {
@@ -140,7 +86,14 @@ class _WebViewScreenState extends State<WebViewScreen> {
           } catch (e) {}
         },
       )
-      ..loadRequest(Uri.parse('https://master-o-task.vercel.app/login'));
+      ..loadRequest(
+        Uri.parse('https://master-o-task.vercel.app/login'),
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      );
   }
 
   @override
