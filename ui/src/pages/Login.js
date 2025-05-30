@@ -118,7 +118,7 @@ const Login = () => {
               size="large"
               onClick={() =>
                 window.sendFlutterAlert &&
-                window.sendFlutterAlert("This is a test alert from the Alert button!")
+                window.sendFlutterAlert("This is a alert from React application")
               }
             >
               Alert Flutter App
