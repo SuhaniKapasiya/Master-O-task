@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
   isVerified: {
     type: Boolean,
     default: false
+  },
+  points: {
+    type: Number,
+    default: 5000
   }
 }, { timestamps: true });
 
