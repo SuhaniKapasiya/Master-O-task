@@ -92,14 +92,14 @@ class _WebViewScreenState extends State<WebViewScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('WebView')),
       body: WebViewWidget(controller: _controller),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           _controller.runJavaScript(
             "window.receiveFromFlutter && window.receiveFromFlutter('hi')",
           );
         },
+        label: const Text('Send alert on web'),
         tooltip: 'Send to web',
-        child: const Icon(Icons.paragliding),
       ),
     );
   }
