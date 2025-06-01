@@ -34,7 +34,7 @@ A multi-part, full-stack technical assignment for SDE candidates, demonstrating 
 
 #### 🧪 API Setup (Local)
 ```bash
-git clone <repo-url>
+git clone https://github.com/ghshivamkashyap/Master-O-task.git
 cd backend
 npm install
 cp .env.example .env
